@@ -1,10 +1,9 @@
 package com.translate.subtitle.core.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.translate.subtitle.core.entity.openai.Message;
 import com.translate.subtitle.core.entity.openai.config.OpenAiConfig;
-import com.translate.subtitle.core.entity.openai.request.ChatGPTRequest;
 import com.translate.subtitle.core.entity.openai.request.ChatRequest;
+import com.translate.subtitle.core.entity.openai.request.GptRequest;
 import com.translate.subtitle.core.util.webUtils.RequestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,29 +12,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-
 @Component
-public class ChatGPTRequestUtil {
+public class GPTRequestUtil {
     private final Logger LOGGER = LogManager.getLogger(this.getClass());
     @Autowired
     private OpenAiConfig openAiConfig;
     @Autowired
     private RequestUtils requestUtils;
 
-    public ResponseEntity<String> chat(String subtitlTxt, String role) {
+    public ResponseEntity<String> send(String subtitlTxt) {
         ChatRequest chatRequest = new ChatRequest();
         chatRequest.setQuestion(subtitlTxt);
-        Message message = new Message();
-        message.setRole(role);
-        message.setContent(chatRequest.getQuestion());
-        ChatGPTRequest chatGPTRequest = ChatGPTRequest.builder()
-                .model(openAiConfig.getModel())
-                .messages(Collections.singletonList(message))
-                .build();
+        GptRequest gptRequest = new GptRequest();
+        gptRequest.setModel(openAiConfig.getGptModel());
+        gptRequest.setPrompt(subtitlTxt);
+        JSONObject body = gptRequest.getBody();
         HttpHeaders headers = openAiConfig.getChatGPTHeader();
-        JSONObject body = chatGPTRequest.getBody();
-        return requestUtils.request(openAiConfig.getChatUrl(), body, headers);
+        return requestUtils.request(openAiConfig.getGptUrl(), body, headers);
     }
+
 
 }

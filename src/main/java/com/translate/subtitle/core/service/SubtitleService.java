@@ -3,9 +3,10 @@ package com.translate.subtitle.core.service;
 import com.translate.subtitle.core.entity.Line;
 import com.translate.subtitle.core.entity.Subtitle;
 import com.translate.subtitle.core.entity.SubtitleType;
-import com.translate.subtitle.core.entity.openai.config.ChatGPTConfig;
-import com.translate.subtitle.core.util.FileUtil;
-import com.translate.subtitle.core.util.LineUtil;
+import com.translate.subtitle.core.entity.openai.config.OpenAiConfig;
+import com.translate.subtitle.core.util.ChatGPTRequestUtil;
+import com.translate.subtitle.core.util.localUtils.FileUtil;
+import com.translate.subtitle.core.util.localUtils.LineUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import java.util.List;
 
 @Service
 public class SubtitleService {
+    private static final String SYSTEM = "system";
+    private static final String ASSISTANT = "assistant";
     private static final String TIMESTAMP_MARK = "-->";
     private final Logger LOGGER = LogManager.getLogger(this.getClass());
     @Autowired
@@ -26,14 +29,16 @@ public class SubtitleService {
     @Autowired
     private LineService lineService;
     @Autowired
-    private TranslateService translateService;
-    @Autowired
     private OpenAiService openAiService;
     @Autowired
-    private ChatGPTConfig chatGPTConfig;
+    private ChatGPTRequestUtil chatGPTRequestUtil;
+    @Autowired
+    private OpenAiConfig openAiConfig;
 
     public void process() {
-        List<String> txt = fileUtil.readFile(chatGPTConfig.getFileName());
+        preRun();
+
+        List<String> txt = fileUtil.readFile(openAiConfig.getFileName());
         Subtitle subtitle = getSubtitleWithFormat(txt);
         List<Line> lines = lineService.getLines(subtitle);
         subtitle.setLine(lines);
@@ -70,6 +75,21 @@ public class SubtitleService {
             if (txt.get(i).contains(TIMESTAMP_MARK)) {
                 if (subtitle.isIndexNumFlag()) {
                     subtitle.setStartLineNum(i - 1);
+                    try {
+                        if (openAiConfig.getStartIndex() == 0) {
+                            String s = txt.get(subtitle.getStartLineNum());
+                            int startIndex = Integer.parseInt(s);
+                            openAiConfig.setStartIndex(startIndex);
+                            LOGGER.info("自动识别首index成功[{}]", openAiConfig.getStartIndex());
+                        } else {
+                            LOGGER.info("已手动配置首index[{}]", openAiConfig.getStartIndex());
+                        }
+                    } catch (NumberFormatException e) {
+                        LOGGER.warn("自动解析字幕首index失败，且未手动配置首index！请检查源文件！");
+                        throw new RuntimeException(e);
+                    }
+                    openAiConfig.setStartIndex(openAiConfig.getStartIndex() - 1);
+                    subtitle.setStartIndex(openAiConfig.getStartIndex());
                 } else {
                     subtitle.setStartLineNum(i);
                 }
@@ -132,6 +152,12 @@ public class SubtitleService {
                 , subtitle.getStartLineNum()
                 , subtitle.getLine().size()
         );
+    }
+
+
+    public void preRun() {
+        chatGPTRequestUtil.chat("下面将英文字幕翻译成中文。", SYSTEM);
+        //chatGPTRequestUtil.chat("生成的文本按原序号分段。", ASSISTANT);
     }
 }
 

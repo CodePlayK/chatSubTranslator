@@ -2,8 +2,8 @@ package com.translate.subtitle.core.service;
 
 import com.translate.subtitle.core.entity.Line;
 import com.translate.subtitle.core.entity.Subtitle;
-import com.translate.subtitle.core.entity.openai.config.ChatGPTConfig;
-import com.translate.subtitle.core.util.LineUtil;
+import com.translate.subtitle.core.entity.openai.config.OpenAiConfig;
+import com.translate.subtitle.core.util.localUtils.LineUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ public class LineService {
     @Autowired
     private LineUtil lineUtil;
     @Autowired
-    private ChatGPTConfig chatGPTConfig;
+    private OpenAiConfig openAiConfig;
 
     public List<Line> getLines(Subtitle subtitle) {
         List<String> txt = subtitle.getTxt();
@@ -38,7 +38,7 @@ public class LineService {
                 jumpLineCount = 2;
                 for (int i = 0; i < lineTxt.size(); i += 5) {
                     Line line = new Line();
-                    line.setIndex(chatGPTConfig.getStartIndex() + index++);
+                    line.setIndex(openAiConfig.getStartIndex() + index++);
                     line.setTimestamp(lineTxt.get(i + 1));
                     if (subtitle.isTranslationFirstinLine()) {
                         line.setTranslation(lineTxt.get(i + jumpLineCount));
@@ -55,7 +55,7 @@ public class LineService {
                 for (int i = 0; i < lineTxt.size(); i += 4) {
                     try {
                         Line line = new Line();
-                        line.setIndex(chatGPTConfig.getStartIndex() + index++);
+                        line.setIndex(openAiConfig.getStartIndex() + index++);
                         line.setTimestamp(lineTxt.get(i + 1));
                         line.setOriginal(lineTxt.get(i + jumpLineCount));
                         lines.add(line);
@@ -72,8 +72,8 @@ public class LineService {
         for (Line line : lines) {
             line.setLineTxt(getLineTxt(line));
             line.setWordCount(line.getLineTxt().length());
-            line.setOriginal(StringUtils.replace(line.getOriginal(), OpenAiService.CUT_MARK, ""));
-            line.setOriginal(StringUtils.replace(line.getOriginal(), OpenAiService.NUM_MARK, ""));
+            line.setOriginal(StringUtils.replace(line.getOriginal(), OpenAiService.OPEN_MARK, ""));
+            line.setOriginal(StringUtils.replace(line.getOriginal(), OpenAiService.CLOSE_MARK, ""));
         }
         subtitle.setLine(lines);
         return lines;
@@ -81,10 +81,7 @@ public class LineService {
 
     String getLineTxt(Line line) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(line.getIndex()).append("#")
-        //.append("\r\n")
-        //.append(line.getTimestamp())
-        ;
+        stringBuilder.append(line.getIndex()).append("#");
         if (null != line.getTranslation()) {
             stringBuilder.append("\r\n").append(line.getTranslation());
         }
@@ -96,7 +93,7 @@ public class LineService {
     private int noIndex(List<Line> lines, List<String> lineTxt, int index, int jumpLineCount, int i) {
         try {
             Line line = new Line();
-            line.setIndex(chatGPTConfig.getStartIndex() + index++);
+            line.setIndex(openAiConfig.getStartIndex() + index++);
             line.setTimestamp(lineTxt.get(i));
             line.setOriginal(lineTxt.get(i + jumpLineCount));
             lines.add(line);
@@ -108,7 +105,7 @@ public class LineService {
 
     private int withIndex(Subtitle subtitle, List<Line> lines, List<String> lineTxt, int index, int jumpLineCount, int i) {
         Line line = new Line();
-        line.setIndex(chatGPTConfig.getStartIndex() + index++);
+        line.setIndex(openAiConfig.getStartIndex() + index++);
         line.setTimestamp(lineTxt.get(i));
         if (subtitle.isTranslationFirstinLine()) {
             line.setTranslation(lineTxt.get(i + jumpLineCount));

@@ -1,15 +1,10 @@
-package com.translate.subtitle.core.util;
+package com.translate.subtitle.core.util.localUtils;
 
 import com.translate.subtitle.core.entity.Line;
 import com.translate.subtitle.core.entity.Subtitle;
-import com.translate.subtitle.core.entity.openai.config.ChatGPTConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,8 +19,7 @@ public class FileUtil {
     private static String FILE_NAME;
     private static String NEW_FULL_PATH;
     private static String ORIGIN_FULL_PATH;
-    @Autowired
-    private ChatGPTConfig chatGPTConfig;
+
 
     public List<String> readFile(String path) {
         File file = new File(path);
@@ -62,7 +56,8 @@ public class FileUtil {
 
     public void writeSubtitle2Local(Subtitle subtitle) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(NEW_FULL_PATH)), StandardCharsets.UTF_8));
-        StringBuilder builder = new StringBuilder();
+        bw.write("异常index:" + subtitle.getErrorIndex());
+        bw.newLine();
         for (Line line : subtitle.getTranslatedLine()) {
             bw.write(String.valueOf(line.getIndex()));
             bw.newLine();
@@ -79,5 +74,14 @@ public class FileUtil {
             bw.flush();
         }
         bw.close();
+    }
+
+    public void writeString2Local(String subtitle, String filePath) throws IOException {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(subtitle);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

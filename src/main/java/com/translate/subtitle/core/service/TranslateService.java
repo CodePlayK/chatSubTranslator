@@ -3,7 +3,7 @@ package com.translate.subtitle.core.service;
 import com.alibaba.fastjson.JSONArray;
 import com.translate.subtitle.core.entity.Line;
 import com.translate.subtitle.core.entity.Subtitle;
-import com.translate.subtitle.core.util.CookieUtils;
+import com.translate.subtitle.core.util.webUtils.CookieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

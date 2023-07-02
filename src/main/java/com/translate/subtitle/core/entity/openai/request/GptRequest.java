@@ -1,30 +1,28 @@
 package com.translate.subtitle.core.entity.openai.request;
 
 import com.alibaba.fastjson.JSONObject;
-import com.translate.subtitle.core.entity.openai.Message;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatGPTRequest implements Serializable {
-
+public class GptRequest {
 
     private String model;
-    private List<Message> messages;
+    private String prompt;
 
     public JSONObject getBody() {
         JSONObject param = new JSONObject();
         param.put("model", model);
-        param.put("messages", messages);
+        param.put("prompt", prompt);
         param.put("temperature", 1.2);
+        param.put("max_tokens", 3000);
+        param.put("stream", false);
+        param.put("n", 1);
         return param;
     }
 }

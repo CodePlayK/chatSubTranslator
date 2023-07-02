@@ -14,6 +14,7 @@ public class Subtitle {
     private int startLineNum;
 
     private String head;
+    private String errorIndex;
     private boolean translationFirstinLine;
     private List<String> txt;
     private int startIndex;

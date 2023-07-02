@@ -4,13 +4,19 @@ openai-service:
   gpt-model: gpt-3.5-turbo
   #  gpt-model: text-davinci-003
   audio-model: whisper-1
+  gpt-model-text: text-davinci-003
   http-client:
     read-timeout: 3000
     connect-timeout: 3000
   urls:
     chat-url: https://api.openai.com/v1/chat/completions
+    gpt-url: https://api.openai.com/v1/completions
     create-transcription-url: https://api.openai.com/v1/audio/transcriptions
     model-url: https://api.openai.com/v1/models
-  file-name: Z:\翻译\Indiana Jones and the Dial of Destiny - Spoilers, STUPIDEST Moments & PLOT HOLES\识别1.srt
+    whisper-url: https://api.openai.com/v1/audio/transcriptions
+  file-name: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\[ChatGPT-SUB]听译 - 副本.srt
+  audio-file-name: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\听译.mp3
   #缺失行数起点-1
-  start-index: 520
+  start-index: 0
+  prompt:
+    chat-pre-question: 将英文翻译成中文，每一句中文不能过长：

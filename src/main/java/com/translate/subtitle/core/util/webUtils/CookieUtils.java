@@ -1,4 +1,4 @@
-package com.translate.subtitle.core.util;
+package com.translate.subtitle.core.util.webUtils;
 
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +42,7 @@ public class CookieUtils {
             Proxy proxy = iter.next();
             InetSocketAddress addr = (InetSocketAddress) proxy.address();
             if (null == addr || null == addr.getHostName()) {
-                LOGGER.error("系统无代理,无法连接Pixiv!");
+                LOGGER.error("系统无代理,无法连接!");
             } else {
                 LOGGER.warn("当前代理地址:{}:{}", addr.getHostName(), addr.getPort());
                 inetSocketAddress = addr;

@@ -1,4 +1,4 @@
-package com.translate.subtitle.core.util;
+package com.translate.subtitle.core.util.localUtils;
 
 import org.springframework.stereotype.Component;
 
