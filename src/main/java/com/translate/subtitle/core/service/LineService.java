@@ -3,6 +3,7 @@ package com.translate.subtitle.core.service;
 import com.translate.subtitle.core.entity.Line;
 import com.translate.subtitle.core.entity.Subtitle;
 import com.translate.subtitle.core.entity.openai.config.OpenAiConfig;
+import com.translate.subtitle.core.util.localUtils.FileUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,8 +19,12 @@ import java.util.stream.Collectors;
 public class LineService {
     private final Logger LOGGER = LogManager.getLogger(this.getClass());
     private final String LINE_BREAKER = "\r\n";
+    private final String TIME_MARK = "-->";
     @Autowired
     private OpenAiConfig openAiConfig;
+    @Autowired
+    private FileUtil fileUtil;
+
 
     public List<Line> getLines(Subtitle subtitle) {
         List<String> txt = subtitle.getTxt();
@@ -50,15 +55,45 @@ public class LineService {
                 }
                 break;
             case NO_TRANSLATE_INDEX:
+                lineTxt.add("");
+                lineTxt.add(TIME_MARK);
                 jumpLineCount = 2;
+                int lastMarki = subtitle.getOpenTimeStampLineNum();
+                StringBuilder builder = new StringBuilder();
+                for (int i = subtitle.getStartLineNum(); i < lineTxt.size(); i++) {
+                    String s = lineTxt.get(i);
+                    if (i == lineTxt.size() - 1) {
+                        System.out.println();
+                    }
+                    if (s.contains(TIME_MARK)) {
+                        for (int j = lastMarki + 1; j < i - 1; j++) {
+                            if (!lineTxt.get(j).isEmpty()) {
+                                builder.append(lineTxt.get(j)).append(" ");
+                                lineTxt.set(j, "");
+                            } else {
+                                lineTxt.set(lastMarki + 1, builder.toString());
+                                builder.delete(0, builder.length());
+                                lastMarki = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+                lineTxt = fileUtil.delMultiEmptyLine(lineTxt);
+                lineTxt.remove(lineTxt.size() - 1);
+
                 for (int i = 0; i < lineTxt.size(); i += 4) {
+                    String s = lineTxt.get(i);
                     try {
                         Line line = new Line();
-                        line.setIndex(Integer.parseInt(lineTxt.get(i)));
+                        line.setIndex(Integer.parseInt(s));
                         line.setTimestamp(lineTxt.get(i + 1));
                         line.setOriginal(lineTxt.get(i + jumpLineCount));
                         lines.add(line);
                     } catch (Exception e) {
+                        for (String s1 : lineTxt) {
+                            LOGGER.warn(s1);
+                        }
                         LOGGER.error("逐行解析异常！最后一行原文为：{}", lines.get(lines.size() - 1).getOriginal());
                     }
                 }
@@ -76,6 +111,9 @@ public class LineService {
         }
         subtitle.setLines(lines);
         lines = sortLines(lines);
+        for (String s1 : lineTxt) {
+            LOGGER.warn(s1);
+        }
         return lines;
     }
 

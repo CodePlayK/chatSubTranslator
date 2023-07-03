@@ -40,7 +40,6 @@ public class SubtitleService {
     public void translate() {
         preRun();
         Subtitle subtitle = getSubtitle(openAiConfig.getFileName(), FILENAME_PREFIX);
-        //translateService.translateLineByGoogle(subtitle);
         ArrayList<Line> chatGPTLines = null;
         try {
             chatGPTLines = openAiService.translateByChatGPT(subtitle);

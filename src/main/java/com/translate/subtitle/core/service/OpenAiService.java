@@ -24,7 +24,6 @@ import java.util.List;
 public class OpenAiService {
     public static final String OPEN_MARK = "「";
     public static final String CLOSE_MARK = "」";
-    //public static final String PRE_QUESTION = "";
     public static final int QUESTION_MAX_LENGTH = 1000;
     private final static String ROLE_USER = "user";
     private final Logger LOGGER = LogManager.getLogger(this.getClass());
@@ -158,7 +157,6 @@ public class OpenAiService {
         String subtitleTxt = subtitleTxtBuilder.toString();
         LOGGER.info("开始翻译原文:[{}]", subtitleTxt);
         ResponseEntity<String> chat = chatGPTRequestUtil.chat(openAiConfig.getChatPreQuestion() + subtitleTxt, ROLE_USER);
-        //ResponseEntity<String> chat = gptRequestUtil.send(PRE_QUESTION + subtitleTxt);
         String body = chat.getBody();
         ChatGPTResponse parse = JSON.parseObject(body, ChatGPTResponse.class);
         String translated = possibleTranslateMark2Mark(parse);

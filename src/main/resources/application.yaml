@@ -14,12 +14,12 @@ openai-service:
     create-transcription-url: https://api.openai.com/v1/audio/transcriptions
     model-url: https://api.openai.com/v1/models
     whisper-url: https://api.openai.com/v1/audio/transcriptions
-  file-name: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\[ChatGPT-SUB]音频1.srt
+  file-name: Z:\翻译\GAME SINS _ Everything WRONG With Forspoken\原文.srt
   audio-file-name: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\音频.mp3
   #缺失行数起点-1
   start-index: 0
   prompt:
-    chat-pre-question: translate each English line into Chinese,and each sentence can't be too long,and keep the num between{「} and {」}"：
+    chat-pre-question: translate each English line into Simplified Chinese,and each sentence can't be too long,and keep the num between{「} and {」},and every sentence follow the same number between{「} and {」} before and after translation：
   fix:
     fixFileName: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\[TRANS][ChatGPT-SUB]音频1 - 副本.srt
     #将某一部分的字幕的译文整体上下挪动几位，原文位置不变，包括边界

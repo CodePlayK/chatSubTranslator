@@ -29,9 +29,9 @@ public class Runner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         preRun();
-        //subtitleService.translate();
+        subtitleService.translate();
         //whisperService.whisper();
-        fixService.fix();
+        //fixService.fix();
         System.out.println();
     }
 

@@ -35,7 +35,6 @@ public class WhisperRequestUtil {
         simpleClientHttpRequestFactory.setProxy(new Proxy(Proxy.Type.HTTP, CookieUtils.inetSocketAddress));
         restTemplate.setRequestFactory(simpleClientHttpRequestFactory);
 
-
         HttpHeaders whisperHeader = openAiConfig.getWhisperHeader();
         WhisperRequest whisperRequest = new WhisperRequest();
         FileSystemResource fileSystemResource = new FileSystemResource(file);
