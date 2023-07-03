@@ -15,19 +15,12 @@ import java.util.stream.Stream;
 
 @Component
 public class FileUtil {
-    private static String ORIGIN_PATH;
-    private static String FILE_NAME;
     private static String NEW_FULL_PATH;
-    private static String ORIGIN_FULL_PATH;
 
 
-    public List<String> readFile(String path) {
-        File file = new File(path);
-        FILE_NAME = file.getName();
-        ORIGIN_PATH = file.getParent();
-        ORIGIN_FULL_PATH = file.getPath();
-        NEW_FULL_PATH = String.format("%s\\[TRANS]%s", ORIGIN_PATH, FILE_NAME);
-        file = new File(NEW_FULL_PATH);
+    public List<String> readFile(String path, String newFullPath) {
+        NEW_FULL_PATH = newFullPath;
+        File file = new File(newFullPath);
         file.delete();
         try {
             Stream<String> lines = Files.lines(Paths.get(path));
@@ -56,9 +49,11 @@ public class FileUtil {
 
     public void writeSubtitle2Local(Subtitle subtitle) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(NEW_FULL_PATH)), StandardCharsets.UTF_8));
-        bw.write("异常index:" + subtitle.getErrorIndex());
-        bw.newLine();
-        for (Line line : subtitle.getTranslatedLine()) {
+        if (null != subtitle.getErrorIndex()) {
+            bw.write("异常index:" + subtitle.getErrorIndex());
+            bw.newLine();
+        }
+        for (Line line : subtitle.getNewLines()) {
             bw.write(String.valueOf(line.getIndex()));
             bw.newLine();
             bw.write(line.getTimestamp());

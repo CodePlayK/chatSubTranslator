@@ -34,7 +34,7 @@ public class TranslateService {
     }
 
     public void translateLineByGoogle(Subtitle subtitle) {
-        List<Line> lines = subtitle.getLine();
+        List<Line> lines = subtitle.getLines();
         for (Line line : lines) {
             try {
                 LOGGER.info("原文[{}]", line.getOriginal());

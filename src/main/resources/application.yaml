@@ -20,3 +20,10 @@ openai-service:
   start-index: 0
   prompt:
     chat-pre-question: translate each English line into Chinese,and each sentence can't be too long,and keep the num between{「} and {」}"：
+  fix:
+    fixFileName: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\[TRANS][ChatGPT-SUB]音频1 - 副本.srt
+    #将某一部分的字幕的译文整体上下挪动几位，原文位置不变，包括边界
+    lineFixs:
+      - dislocationIndexOpen: 201
+        dislocationIndexClose: 206
+        moveCount: 3

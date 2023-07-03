@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class SubtitleService {
     private static final String SYSTEM = "system";
     private static final String ASSISTANT = "assistant";
     private static final String TIMESTAMP_MARK = "-->";
+    private static final String FILENAME_PREFIX = "TRANS";
     private final Logger LOGGER = LogManager.getLogger(this.getClass());
     @Autowired
     private FileUtil fileUtil;
@@ -35,15 +37,9 @@ public class SubtitleService {
     @Autowired
     private OpenAiConfig openAiConfig;
 
-    public void process() {
+    public void translate() {
         preRun();
-
-        List<String> txt = fileUtil.readFile(openAiConfig.getFileName());
-        Subtitle subtitle = getSubtitleWithFormat(txt);
-        List<Line> lines = lineService.getLines(subtitle);
-        subtitle.setLine(lines);
-        checkLines(subtitle);
-        logOriginSubtitle(subtitle);
+        Subtitle subtitle = getSubtitle(openAiConfig.getFileName(), FILENAME_PREFIX);
         //translateService.translateLineByGoogle(subtitle);
         ArrayList<Line> chatGPTLines = null;
         try {
@@ -51,7 +47,7 @@ public class SubtitleService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        subtitle.setTranslatedLine(chatGPTLines);
+        subtitle.setNewLines(chatGPTLines);
         try {
             fileUtil.writeSubtitle2Local(subtitle);
         } catch (IOException e) {
@@ -60,10 +56,25 @@ public class SubtitleService {
         System.out.println();
     }
 
+    public Subtitle getSubtitle(String fileName, String prefix) {
+        File file = new File(fileName);
+        String name = file.getName();
+        String parent = file.getParent();
+        String newFullPath = String.format("%s\\[%s]%s", parent, prefix, name);
+        List<String> txt = fileUtil.readFile(fileName, newFullPath);
+        Subtitle subtitle = getSubtitleWithFormat(txt);
+        List<Line> lines = lineService.getLines(subtitle);
+        subtitle.setLines(lines);
+        checkLines(subtitle);
+        logOriginSubtitle(subtitle);
+        return subtitle;
+    }
+
     private Subtitle getSubtitleWithFormat(List<String> txt) {
         Subtitle subtitle = new Subtitle();
         subtitle.setTxt(txt);
         int openTimeStampLineNum = getOpenTimeStampLineNum(txt);
+        subtitle.setOpenTimeStampLineNum(openTimeStampLineNum);
         subtitle.setTranslated(txt.size() > openTimeStampLineNum + 2 && !txt.get(openTimeStampLineNum + 2).isEmpty());
         if (subtitle.isTranslated()) {
             subtitle.setIndexNumFlag(!txt.get(openTimeStampLineNum + 4).contains(TIMESTAMP_MARK));
@@ -111,7 +122,7 @@ public class SubtitleService {
     }
 
     private void checkLines(Subtitle subtitle) {
-        List<Line> lines = subtitle.getLine();
+        List<Line> lines = subtitle.getLines();
         for (int i = 0; i < lines.size(); i++) {
             if ((null != lines.get(i).getOriginal() && lines.get(i).getOriginal().contains(TIMESTAMP_MARK))
                     || (null != lines.get(i).getTranslation() && lines.get(i).getTranslation().contains(TIMESTAMP_MARK))) {
@@ -123,12 +134,12 @@ public class SubtitleService {
 
     private boolean getTranslationFirst(Subtitle subtitle) {
         List<String> txt = subtitle.getTxt();
-        return lineUtil.isContainChinese(txt.get(subtitle.getStartLineNum() + 1));
+        return lineUtil.isContainChinese(txt.get(subtitle.getOpenTimeStampLineNum() + 1));
     }
 
 
     private int getOpenTimeStampLineNum(List<String> txt) {
-        for (int i = 1; i <= txt.size(); i++) {
+        for (int i = 0; i < txt.size(); i++) {
             if (txt.get(i).contains(TIMESTAMP_MARK) && !txt.get(i + 1).isEmpty()) {
                 return i;
             }
@@ -150,7 +161,7 @@ public class SubtitleService {
                 , subtitle.isTranslated()
                 , subtitle.isTranslationFirstinLine()
                 , subtitle.getStartLineNum()
-                , subtitle.getLine().size()
+                , subtitle.getLines().size()
         );
     }
 

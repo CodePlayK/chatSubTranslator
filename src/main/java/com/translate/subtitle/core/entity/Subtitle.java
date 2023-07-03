@@ -8,10 +8,11 @@ import java.util.List;
 public class Subtitle {
     private SubtitleType type;
     private boolean indexNumFlag;
-    private List<Line> line;
-    private List<Line> translatedLine;
+    private List<Line> lines;
+    private List<Line> newLines;
     private boolean translated;
     private int startLineNum;
+    private int openTimeStampLineNum;
 
     private String head;
     private String errorIndex;

@@ -53,7 +53,7 @@ public class OpenAiService {
     }
 
     public ArrayList<Line> translateByChatGPT(Subtitle subtitle) throws IOException {
-        List<Line> lines = subtitle.getLine();
+        List<Line> lines = subtitle.getLines();
         int wordCount = 0;
         ArrayList<Line> linesTmp = new ArrayList<>();
         ArrayList<Line> newLines = new ArrayList<>();
@@ -104,7 +104,7 @@ public class OpenAiService {
                     }
                 }
                 newLines.addAll(linesTmp);
-                subtitle.setTranslatedLine(newLines);
+                subtitle.setNewLines(newLines);
                 subtitle.setErrorIndex(builder1.toString());
                 fileUtil.writeSubtitle2Local(subtitle);
                 linesTmp.clear();
