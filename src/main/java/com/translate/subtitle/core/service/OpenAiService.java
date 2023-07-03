@@ -88,6 +88,7 @@ public class OpenAiService {
                         break;
                     } else if (i1 == linesTmp.size()) {
                         LOGGER.warn("该段翻译成功！");
+                        break;
                     } else {
                         LOGGER.warn("本段翻译异常,缺失行数:[{}],缺失index：[{}],重试第{}次", linesTmp.size() - i1, builder.toString(), i + 1);
                     }

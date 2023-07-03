@@ -14,9 +14,9 @@ openai-service:
     create-transcription-url: https://api.openai.com/v1/audio/transcriptions
     model-url: https://api.openai.com/v1/models
     whisper-url: https://api.openai.com/v1/audio/transcriptions
-  file-name: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\[ChatGPT-SUB]听译 - 副本.srt
-  audio-file-name: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\听译.mp3
+  file-name: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\[ChatGPT-SUB]音频1.srt
+  audio-file-name: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\音频.mp3
   #缺失行数起点-1
   start-index: 0
   prompt:
-    chat-pre-question: 将英文翻译成中文，每一句中文不能过长：
+    chat-pre-question: translate each English line into Chinese,and each sentence can't be too long,and keep the num between{「} and {」}"：
