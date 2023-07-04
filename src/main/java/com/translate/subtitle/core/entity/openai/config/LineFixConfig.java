@@ -9,7 +9,7 @@ import java.util.List;
 
 @Configuration
 @Data
-@ConfigurationProperties(prefix = "openai-service.fix")
+@ConfigurationProperties(prefix = "openai-service.fixer")
 public class LineFixConfig {
     private String fixFileName;
     private List<LineFix> lineFixs;

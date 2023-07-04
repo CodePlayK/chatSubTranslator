@@ -44,29 +44,35 @@ public class SubtitleService {
         try {
             chatGPTLines = openAiService.translateByChatGPT(subtitle);
         } catch (IOException e) {
+            LOGGER.error("chatGPT翻译异常！");
             throw new RuntimeException(e);
         }
         subtitle.setNewLines(chatGPTLines);
         try {
             fileUtil.writeSubtitle2Local(subtitle);
         } catch (IOException e) {
+            LOGGER.error("写出字幕文件失败！");
             throw new RuntimeException(e);
         }
-        System.out.println();
+
     }
 
     public Subtitle getSubtitle(String fileName, String prefix) {
-        File file = new File(fileName);
-        String name = file.getName();
-        String parent = file.getParent();
-        String newFullPath = String.format("%s\\[%s]%s", parent, prefix, name);
+        LOGGER.info("开始获取字幕文件:{}", fileName);
+        String newFullPath = getNewFullPath(fileName, prefix);
         List<String> txt = fileUtil.readFile(fileName, newFullPath);
         Subtitle subtitle = getSubtitleWithFormat(txt);
-        List<Line> lines = lineService.getLines(subtitle);
-        subtitle.setLines(lines);
+        subtitle.setLines(lineService.getLines(subtitle));
         checkLines(subtitle);
         logOriginSubtitle(subtitle);
         return subtitle;
+    }
+
+    private String getNewFullPath(String fileName, String prefix) {
+        File file = new File(fileName);
+        String name = file.getName();
+        String parent = file.getParent();
+        return String.format("%s\\[%s]%s", parent, prefix, name);
     }
 
     private Subtitle getSubtitleWithFormat(List<String> txt) {
@@ -88,7 +94,7 @@ public class SubtitleService {
                     try {
                         if (openAiConfig.getStartIndex() == 0) {
                             String s = txt.get(subtitle.getStartLineNum());
-                            int startIndex = Integer.parseInt(s);
+                            int startIndex = Integer.parseInt(s.trim());
                             openAiConfig.setStartIndex(startIndex);
                             LOGGER.info("自动识别首index成功[{}]", openAiConfig.getStartIndex());
                         } else {
@@ -147,12 +153,13 @@ public class SubtitleService {
     }
 
     private void logOriginSubtitle(Subtitle subtitle) {
-        LOGGER.info("解析结束:字幕类型[{}]," +
-                        "包含数标[{}]," +
-                        "头部内容:[{}]," +
-                        "译文[{}]," +
-                        "译文在上[{}]," +
-                        "正文起始行数[{}]," +
+        LOGGER.info("解析结束:\n" +
+                        "字幕类型[{}]\r\n" +
+                        "包含数标[{}]\n" +
+                        "头部内容:[{}]\n" +
+                        "译文[{}]\n" +
+                        "译文在上[{}]\n" +
+                        "正文起始行数[{}]\n" +
                         "总句数[{}]"
                 , subtitle.getType()
                 , subtitle.isIndexNumFlag()

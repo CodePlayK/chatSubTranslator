@@ -30,7 +30,6 @@ public class WhisperService {
             String fileName = StringUtils.substringBefore(file.getName(), ".");
             String path = String.format("%s\\[ChatGPT-SUB]%s.srt", fileParent, fileName);
             fileUtil.writeString2Local(body, path);
-            System.out.println();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

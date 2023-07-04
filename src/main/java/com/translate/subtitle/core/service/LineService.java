@@ -56,7 +56,7 @@ public class LineService {
                 for (int i = subtitle.getStartLineNum(); i < lineTxt.size(); i++) {
                     String s = lineTxt.get(i);
                     if (i == lineTxt.size() - 1) {
-                        System.out.println();
+
                     }
                     if (s.contains(TIME_MARK)) {
                         for (int j = lastMarki + 1; j < i - 1; j++) {
@@ -84,9 +84,6 @@ public class LineService {
                         line.setOriginal(lineTxt.get(i + jumpLineCount));
                         lines.add(line);
                     } catch (Exception e) {
-                        for (String s1 : lineTxt) {
-                            LOGGER.warn(s1);
-                        }
                         LOGGER.error("逐行解析异常！最后一行原文为：{}", lines.get(lines.size() - 1).getOriginal());
                     }
                 }
@@ -104,9 +101,6 @@ public class LineService {
         }
         subtitle.setLines(lines);
         lines = sortLines(lines);
-        for (String s1 : lineTxt) {
-            LOGGER.warn(s1);
-        }
         return lines;
     }
 

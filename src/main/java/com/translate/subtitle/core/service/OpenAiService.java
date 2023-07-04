@@ -24,7 +24,6 @@ import java.util.List;
 public class OpenAiService {
     public static final String OPEN_MARK = "「";
     public static final String CLOSE_MARK = "」";
-    public static final int QUESTION_MAX_LENGTH = 1000;
     private final static String ROLE_USER = "user";
     private final Logger LOGGER = LogManager.getLogger(this.getClass());
     @Autowired
@@ -58,7 +57,8 @@ public class OpenAiService {
         ArrayList<Line> newLines = new ArrayList<>();
         StringBuilder builder1 = new StringBuilder();
         for (Line line : lines) {
-            if (wordCount + line.getWordCount() < QUESTION_MAX_LENGTH && lines.get(lines.size() - 1).getIndex() != line.getIndex()) {
+            if (wordCount + line.getWordCount() < openAiConfig.getQuestionMaxLength()
+                    && lines.get(lines.size() - 1).getIndex() != line.getIndex()) {
                 linesTmp.add(line);
                 wordCount += line.getWordCount();
             } else {
@@ -66,13 +66,13 @@ public class OpenAiService {
                     linesTmp.add(line);
                 }
                 String translateLines = "";
-                for (int i = 0; i < 5; i++) {
+                for (int i = 0; i < openAiConfig.getLineRetryTimes(); i++) {
                     StringBuilder builder = new StringBuilder();
                     translateLines = translateLines(linesTmp);
                     translateLines = errorMark2quotationMark(translateLines);
                     List<String> translateLinelist = Arrays.asList(translateLines.split(OPEN_MARK));
                     translateLinelist = fileUtil.delMultiEmptyLine(translateLinelist);
-                    test(translateLinelist, linesTmp);
+                    mapTranslation2LineByIndex(translateLinelist, linesTmp);
                     int i1 = 0;
                     for (Line line1 : linesTmp) {
                         if (null != line1.getTranslation()) {
@@ -81,19 +81,23 @@ public class OpenAiService {
                             builder.append(line1.getIndex()).append(",");
                         }
                     }
-                    if (i1 >= linesTmp.size() * 0.75 && i1 != linesTmp.size()) {
-                        LOGGER.warn("本段翻译有空行但未触发重试线：缺失行数:[{}],缺失index：[{}]", linesTmp.size() - i1, builder.toString());
+                    if (i1 >= linesTmp.size() * openAiConfig.getRetryExponent() && i1 != linesTmp.size()) {
+                        LOGGER.warn("本段翻译有空行但未触发重试线：\r\n" +
+                                        "总行数:[{}],缺失行数:[{}],触发线系数[{}],缺失index：[{}]",
+                                linesTmp.size(), linesTmp.size() - i1, openAiConfig.getRetryExponent(), builder.toString());
                         builder1.append(builder);
                         break;
                     } else if (i1 == linesTmp.size()) {
                         LOGGER.warn("该段翻译成功！");
                         break;
                     } else {
-                        LOGGER.warn("本段翻译异常,缺失行数:[{}],缺失index：[{}],重试第{}次", linesTmp.size() - i1, builder.toString(), i + 1);
+                        LOGGER.warn("本段翻译异常,缺失行数:[{}],缺失index：[{}],重试第{}次",
+                                linesTmp.size() - i1, builder.toString(), i + 1);
                     }
                 }
 
                 boolean lastNotEmpty = false;
+                //将空行翻译复制上一条翻译
                 for (int i = 0; i < linesTmp.size(); i++) {
                     Line line1 = linesTmp.get(i);
                     if (lastNotEmpty && (null == line1.getTranslation() || line1.getTranslation().isEmpty())) {
@@ -111,7 +115,6 @@ public class OpenAiService {
                 wordCount = 0;
             }
         }
-
         return newLines;
     }
 
@@ -135,7 +138,7 @@ public class OpenAiService {
         return translateLines;
     }
 
-    private void test(List<String> translateLinelist, List<Line> lines) {
+    private void mapTranslation2LineByIndex(List<String> translateLinelist, List<Line> lines) {
         for (String s : translateLinelist) {
             if (s.contains(CLOSE_MARK)) {
                 String s1 = StringUtils.substringBefore(s, CLOSE_MARK);
@@ -145,7 +148,6 @@ public class OpenAiService {
                     }
                 }
             }
-
         }
     }
 
@@ -156,7 +158,7 @@ public class OpenAiService {
         }
         String subtitleTxt = subtitleTxtBuilder.toString();
         LOGGER.info("开始翻译原文:[{}]", subtitleTxt);
-        ResponseEntity<String> chat = chatGPTRequestUtil.chat(openAiConfig.getChatPreQuestion() + subtitleTxt, ROLE_USER);
+        ResponseEntity<String> chat = chatGPTRequestUtil.chat(openAiConfig.getChatPrePrompt() + subtitleTxt, ROLE_USER);
         String body = chat.getBody();
         ChatGPTResponse parse = JSON.parseObject(body, ChatGPTResponse.class);
         String translated = possibleTranslateMark2Mark(parse);

@@ -26,15 +26,18 @@ public class Runner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         preRun();
+        //chatGPT翻译
         subtitleService.translate();
+        ////Whisper音频转字幕
         //whisperService.whisper();
+        ////修复字幕
         //fixService.fix();
-        System.out.println();
+
     }
 
     private void preRun() {
         cookieUtils.getSysProxy();
-        System.out.println();
+
     }
 
 }

@@ -12,12 +12,6 @@ import org.springframework.http.MediaType;
 @Data
 public class OpenAiConfig {
 
-    @Value("${openai-service.http-client.read-timeout}")
-    private int readTimeout;
-
-    @Value("${openai-service.http-client.connect-timeout}")
-    private int connectTimeout;
-
     @Value("${openai-service.api-key}")
     private String apiKey;
 
@@ -28,25 +22,28 @@ public class OpenAiConfig {
     private String audioModel;
     @Value("${openai-service.gpt-model-text}")
     private String gptModel;
-    @Value("${openai-service.urls.chat-url}")
+    @Value("${openai-service.chatGPT-translator.chat-url}")
     private String chatUrl;
-    @Value("${openai-service.urls.gpt-url}")
+    @Value("${openai-service.GPT-translator.gpt-url}")
     private String gptUrl;
-    @Value("${openai-service.urls.create-transcription-url}")
-    private String transcriptionUrl;
-    @Value("${openai-service.urls.whisper-url}")
+    @Value("${openai-service.whisper.whisper-url}")
     private String whisperUrl;
     @Value("${openai-service.urls.model-url}")
     private String modelUrl;
-    @Value("${openai-service.file-name}")
+    @Value("${openai-service.chatGPT-translator.file-name}")
     private String fileName;
-    @Value("${openai-service.audio-file-name}")
+    @Value("${openai-service.whisper.audio-file-name}")
     private String audioFileName;
-    @Value("${openai-service.prompt.chat-pre-question}")
-    private String chatPreQuestion;
-
-    @Value("${openai-service.start-index}")
+    @Value("${openai-service.chatGPT-translator.question.chat-pre-prompt}")
+    private String chatPrePrompt;
+    @Value("${openai-service.chatGPT-translator.start-index}")
     private int startIndex;
+    @Value("${openai-service.chatGPT-translator.line-retry-exponent}")
+    private float retryExponent;
+    @Value("${openai-service.chatGPT-translator.line-retry-times}")
+    private int lineRetryTimes;
+    @Value("${openai-service.chatGPT-translator.question.max-length}")
+    private int questionMaxLength;
 
     public HttpHeaders getChatGPTHeader() {
         HttpHeaders headers = new HttpHeaders();

@@ -33,7 +33,7 @@ public class FixService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println();
+
     }
 
     private void fixDislocation(Subtitle subtitle) {
@@ -44,9 +44,14 @@ public class FixService {
             List<String> transList = new ArrayList<>();
             for (int i = 0; i < lines.size(); i++) {
                 transList.add(lines.get(i).getTranslation());
-                if (lines.get(i).getIndex() == lineFix.getDislocationIndexOpen()) lineFix.setListIndexOpen(i);
-                if (lines.get(i).getIndex() == lineFix.getDislocationIndexClose()) lineFix.setListIndexClose(i);
+                if (lines.get(i).getIndex() == lineFix.getDislocationIndexOpen()) {
+                    lineFix.setListIndexOpen(i);
+                }
+                if (lines.get(i).getIndex() == lineFix.getDislocationIndexClose()) {
+                    lineFix.setListIndexClose(i);
+                }
             }
+            //将丢失的翻译存到边界
             if (lineFix.getMoveCount() > 0) {
                 for (int i = lineFix.getListIndexClose() - lineFix.getMoveCount() + 1; i <= lineFix.getListIndexClose(); i++) {
                     builder.append("@").append(lines.get(i).getTranslation());

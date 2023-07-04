@@ -1,30 +1,42 @@
+spring.profiles.active: key
 openai-service:
-  api-key: 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
-  gpt-model: gpt-3.5-turbo
+  #  api-key: ################################
   audio-model: whisper-1
   gpt-model-text: text-davinci-003
-  http-client:
-    read-timeout: 3000
-    connect-timeout: 3000
+  gpt-model: gpt-3.5-turbo
   urls:
-    chat-url: https://api.openai.com/v1/chat/completions
-    gpt-url: https://api.openai.com/v1/completions
-    create-transcription-url: https://api.openai.com/v1/audio/transcriptions
     model-url: https://api.openai.com/v1/models
+
+  GPT-translator:
+    gpt-url: https://api.openai.com/v1/completions
+
+  chatGPT-translator:
+    chat-url: https://api.openai.com/v1/chat/completions
+    file-name: Z:\翻译\The Champions- Season 7, Episode 2\原文.srt
+    question:
+      #每次向openai发送的最大字符数限制
+      max-length: 700
+      #发送的question前缀，用于描述翻译需求
+      chat-pre-prompt: translate each English line into Simplified Chinese,and keep the num between{「} and {」}：
+    #手动设定翻译起始index
+    start-index: 0
+    #翻译原语句数*这个数不能大于chatGPT响应的行数
+    line-retry-exponent: 0.85
+    #单句翻译失败重试次数
+    line-retry-times: 5
+  whisper:
     whisper-url: https://api.openai.com/v1/audio/transcriptions
-  file-name: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\[ChatGPT-SUB]原文.srt
-  audio-file-name: Z:\翻译\GAME SINS _ Everything WRONG With Forspoken\音频.mp3
+    audio-file-name: Z:\翻译\GAME SINS _ Everything WRONG With Forspoken\音频.mp3
+
   #缺失行数起点-1,0为自动检测
-  start-index: 0
-  prompt:
-    chat-pre-question: translate each English line into Simplified Chinese,and keep the num between{「} and {」}：
-  fix:
-    fixFileName: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\[ChatGPT-SUB]原文.srt
-    #将某一部分的字幕的译文整体上下挪动几位，原文位置不变，包括边界
+  fixer:
+    fixFileName: Z:\翻译\The Champions- Season 7, Episode 2\The Champions- Season 7, Episode 2.srt
+    #将某一部分的字幕的译文整体上下挪动几位，其他位置不变，包括边界，需要文件格式为双语且包含数字标头，且译文和原文不能有多行,基于字幕的数字标头
     lineFixs:
-      - dislocationIndexOpen: 6
-        dislocationIndexClose: 11
+      - dislocationIndexOpen: 101
+        dislocationIndexClose: 104
+        #正数下移，负数上移
         moveCount: 1
-      - dislocationIndexOpen: 27
-        dislocationIndexClose: 11
-        moveCount: 2
+#      - dislocationIndexOpen: 27
+#        dislocationIndexClose: 11
+#        moveCount: 2

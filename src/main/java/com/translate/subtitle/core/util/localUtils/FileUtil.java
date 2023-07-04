@@ -25,7 +25,6 @@ public class FileUtil {
         try {
             Stream<String> lines = Files.lines(Paths.get(path));
             List<String> txt = lines.collect(Collectors.toList());
-            System.out.println();
             return delMultiEmptyLine(txt);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -72,7 +71,6 @@ public class FileUtil {
     }
 
     public void writeString2Local(String subtitle, String filePath) throws IOException {
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write(subtitle);
         } catch (IOException e) {

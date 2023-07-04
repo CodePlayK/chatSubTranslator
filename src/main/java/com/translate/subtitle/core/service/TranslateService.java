@@ -109,22 +109,6 @@ public class TranslateService {
      * 初始化语言类
      */
     private void init() {
-        //FF15
-        WORD_MAP.put("Cloud", "克劳德");
-        WORD_MAP.put("Noctis", "诺克提斯");
-        WORD_MAP.put("Ravus", "拉弗斯");
-        WORD_MAP.put("Gladiolus", "格拉迪欧拉斯");
-        WORD_MAP.put("Aranea", "阿拉尼雅");
-        WORD_MAP.put("Ignis", "伊格尼斯");
-        WORD_MAP.put("Regis", "雷吉斯");
-        WORD_MAP.put("Prompto", "普伦普特");
-        WORD_MAP.put("Cor", "科尔");
-        WORD_MAP.put("O K I B E L I E V E Y O U", "行吧");
-        WORD_MAP.put("Ardyn", "亚丹");
-        WORD_MAP.put("Lunafreya", "露娜芙蕾雅");
-        WORD_MAP.put("C U P N O D L E S™", "日清泡面™");
-
-
         LANGUAGE_MAP.put("auto", "Automatic");
         LANGUAGE_MAP.put("af", "Afrikaans");
         LANGUAGE_MAP.put("sq", "Albanian");
