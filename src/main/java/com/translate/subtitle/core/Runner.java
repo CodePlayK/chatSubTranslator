@@ -32,12 +32,10 @@ public class Runner implements CommandLineRunner {
         //whisperService.whisper();
         ////修复字幕
         //fixService.fix();
-
     }
 
     private void preRun() {
         cookieUtils.getSysProxy();
-
     }
 
 }

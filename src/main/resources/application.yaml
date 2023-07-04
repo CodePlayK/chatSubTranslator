@@ -9,27 +9,31 @@ openai-service:
 
   GPT-translator:
     gpt-url: https://api.openai.com/v1/completions
-
+  #chatGPT翻译
   chatGPT-translator:
     chat-url: https://api.openai.com/v1/chat/completions
+    #原字幕地址，输出字幕在同一目录
     file-name: Z:\翻译\The Champions- Season 7, Episode 2\原文.srt
     question:
-      #每次向openai发送的最大字符数限制
+      #每次向openai发送的最大字符数限制,建议700,最大不要超过2000
       max-length: 700
-      #发送的question前缀，用于描述翻译需求
+      #发送的question前缀，位于字幕正文前，用于描述翻译需求(「」用于标记字幕序号)
       chat-pre-prompt: translate each English line into Simplified Chinese,and keep the num between{「} and {」}：
-    #手动设定翻译起始index
+    #手动设定翻译起始index，配置为0时为自动检测
     start-index: 0
-    #翻译原语句数*这个数不能大于chatGPT响应的行数
+    #响应译文缺失语句数的重试线，翻译原语句数 乘 这个数不能大于 chatGPT响应的行数，大于则会重试
     line-retry-exponent: 0.85
     #单句翻译失败重试次数
     line-retry-times: 5
+
+  #音频转字幕，文件不能大于25mb
   whisper:
     whisper-url: https://api.openai.com/v1/audio/transcriptions
+    #音频地址，输出字幕在同一目录
     audio-file-name: Z:\翻译\GAME SINS _ Everything WRONG With Forspoken\音频.mp3
-
-  #缺失行数起点-1,0为自动检测
+  #字幕修复工具箱
   fixer:
+    #原字幕地址，输出字幕在同一目录
     fixFileName: Z:\翻译\The Champions- Season 7, Episode 2\The Champions- Season 7, Episode 2.srt
     #将某一部分的字幕的译文整体上下挪动几位，其他位置不变，包括边界，需要文件格式为双语且包含数字标头，且译文和原文不能有多行,基于字幕的数字标头
     lineFixs:
