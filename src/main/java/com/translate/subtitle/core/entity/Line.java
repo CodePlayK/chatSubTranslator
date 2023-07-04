@@ -9,7 +9,6 @@ public class Line {
     private String original;
     private String translation;
     private int wordCount;
-
     private String lineTxt;
 
 

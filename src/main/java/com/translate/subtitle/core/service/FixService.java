@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,47 +40,33 @@ public class FixService {
         List<Line> lines = subtitle.getLines();
         List<LineFix> lineFixs = lineFixConfig.getLineFixs();
         for (LineFix lineFix : lineFixs) {
-            int dislocationIndexOpen = lineFix.getDislocationIndexOpen();
-
-            int dislocationIndexClose = lineFix.getDislocationIndexClose();
+            StringBuilder builder = new StringBuilder();
+            List<String> transList = new ArrayList<>();
+            for (int i = 0; i < lines.size(); i++) {
+                transList.add(lines.get(i).getTranslation());
+                if (lines.get(i).getIndex() == lineFix.getDislocationIndexOpen()) lineFix.setListIndexOpen(i);
+                if (lines.get(i).getIndex() == lineFix.getDislocationIndexClose()) lineFix.setListIndexClose(i);
+            }
             if (lineFix.getMoveCount() > 0) {
-                StringBuilder builder = new StringBuilder();
-
-                for (int i = lines.size() - 1; i >= 0; i--) {
-                    Line line = lines.get(i);
-                    if (line.getIndex() >= dislocationIndexOpen
-                            && line.getIndex() <= dislocationIndexClose) {
-                        if (line.getIndex() > dislocationIndexClose - lineFix.getMoveCount()) {
-                            builder.append("@").append("[").append(line.getIndex()).append("]").append(line.getTranslation());
-                        }
-                        moveLines(lines, lineFix, dislocationIndexClose, i, line);
-
-                    }
-                }
-                for (Line line : lines) {
-                    if (line.getIndex() == dislocationIndexClose) {
-                        line.setTranslation(line.getTranslation() + builder);
-                    }
+                for (int i = lineFix.getListIndexClose() - lineFix.getMoveCount() + 1; i <= lineFix.getListIndexClose(); i++) {
+                    builder.append("@").append(lines.get(i).getTranslation());
                 }
             } else {
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < lines.size(); i++) {
-                    Line line = lines.get(i);
-                    if (line.getIndex() >= dislocationIndexOpen
-                            && line.getIndex() <= dislocationIndexClose) {
-
-                        if (line.getIndex() < dislocationIndexOpen - lineFix.getMoveCount()) {
-                            builder.append("@").append("[").append(line.getIndex()).append("]").append(line.getTranslation());
-                        }
-
-                        moveLines(lines, lineFix, dislocationIndexOpen, i, line);
-                    }
+                for (int i = lineFix.getListIndexOpen(); i <= lineFix.getListIndexOpen() - lineFix.getMoveCount(); i++) {
+                    builder.append("@").append(lines.get(i).getTranslation());
                 }
-                for (Line line : lines) {
-                    if (line.getIndex() == dislocationIndexOpen) {
-                        line.setTranslation(line.getTranslation() + builder);
-                    }
-                }
+            }
+
+            for (int i = lineFix.getListIndexOpen(); i <= lineFix.getListIndexClose(); i++) {
+                LOGGER.info("替换:原译文移动{}位,[{}]{}-->", lineFix.getMoveCount(), lines.get(i).getIndex(), lines.get(i).getTranslation());
+                lines.get(i).setTranslation(transList.get(i - lineFix.getMoveCount()));
+                LOGGER.info("新译文[{}]{}", lines.get(i).getIndex(), lines.get(i).getTranslation());
+
+            }
+            if (lineFix.getMoveCount() > 0) {
+                lines.get(lineFix.getListIndexClose()).setTranslation(lines.get(lineFix.getListIndexClose()).getTranslation() + builder);
+            } else {
+                lines.get(lineFix.getListIndexOpen()).setTranslation(builder.toString());
             }
             subtitle.setNewLines(lines);
         }

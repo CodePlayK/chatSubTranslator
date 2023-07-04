@@ -1,8 +1,6 @@
 openai-service:
   api-key: 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
-  #  gpt-model: gpt-3.5-turbo
   gpt-model: gpt-3.5-turbo
-  #  gpt-model: text-davinci-003
   audio-model: whisper-1
   gpt-model-text: text-davinci-003
   http-client:
@@ -14,16 +12,19 @@ openai-service:
     create-transcription-url: https://api.openai.com/v1/audio/transcriptions
     model-url: https://api.openai.com/v1/models
     whisper-url: https://api.openai.com/v1/audio/transcriptions
-  file-name: Z:\翻译\GAME SINS _ Everything WRONG With Forspoken\原文.srt
-  audio-file-name: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\音频.mp3
-  #缺失行数起点-1
+  file-name: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\[ChatGPT-SUB]原文.srt
+  audio-file-name: Z:\翻译\GAME SINS _ Everything WRONG With Forspoken\音频.mp3
+  #缺失行数起点-1,0为自动检测
   start-index: 0
   prompt:
-    chat-pre-question: translate each English line into Simplified Chinese,and each sentence can't be too long,and keep the num between{「} and {」},and every sentence follow the same number between{「} and {」} before and after translation：
+    chat-pre-question: translate each English line into Simplified Chinese,and keep the num between{「} and {」}：
   fix:
-    fixFileName: Z:\翻译\VFX Artists DEBUNK FLYING ORB UFO Videos\[TRANS][ChatGPT-SUB]音频1 - 副本.srt
+    fixFileName: Z:\翻译\VFX Artists React to Bad & Great CGi 107 (ft. Paul Debevec)\[ChatGPT-SUB]原文.srt
     #将某一部分的字幕的译文整体上下挪动几位，原文位置不变，包括边界
     lineFixs:
-      - dislocationIndexOpen: 201
-        dislocationIndexClose: 206
-        moveCount: 3
+      - dislocationIndexOpen: 6
+        dislocationIndexClose: 11
+        moveCount: 1
+      - dislocationIndexOpen: 27
+        dislocationIndexClose: 11
+        moveCount: 2

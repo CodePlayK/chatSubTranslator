@@ -9,4 +9,7 @@ public class LineFix {
     private int dislocationIndexOpen;
     private int dislocationIndexClose;
     private int moveCount;
+
+    private int listIndexOpen;
+    private int listIndexClose;
 }

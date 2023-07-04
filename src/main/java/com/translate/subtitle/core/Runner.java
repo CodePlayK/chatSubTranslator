@@ -1,6 +1,5 @@
 package com.translate.subtitle.core;
 
-import com.translate.subtitle.core.entity.openai.config.LineFixConfig;
 import com.translate.subtitle.core.service.FixService;
 import com.translate.subtitle.core.service.SubtitleService;
 import com.translate.subtitle.core.service.WhisperService;
@@ -23,8 +22,6 @@ public class Runner implements CommandLineRunner {
     private ChatGPTRequestUtil chatGPTRequestUtil;
     @Autowired
     private CookieUtils cookieUtils;
-    @Autowired
-    private LineFixConfig lineFixConfig;
 
     @Override
     public void run(String... args) throws Exception {

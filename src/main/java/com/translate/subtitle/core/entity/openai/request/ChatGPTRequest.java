@@ -15,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatGPTRequest implements Serializable {
-
-
     private String model;
     private List<Message> messages;
 

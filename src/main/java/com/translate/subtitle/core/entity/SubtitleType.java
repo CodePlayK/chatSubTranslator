@@ -6,7 +6,6 @@ public enum SubtitleType {
     TRANSLATE_NO_INDEX(3),
     TRANSLATE_INDEX(4),
     ;
-
     SubtitleType(int i) {
 
     }

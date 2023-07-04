@@ -13,7 +13,6 @@ public class Subtitle {
     private boolean translated;
     private int startLineNum;
     private int openTimeStampLineNum;
-
     private String head;
     private String errorIndex;
     private boolean translationFirstinLine;

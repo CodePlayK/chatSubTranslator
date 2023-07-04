@@ -44,14 +44,7 @@ public class LineService {
                     Line line = new Line();
                     line.setIndex(Integer.parseInt(lineTxt.get(i)));
                     line.setTimestamp(lineTxt.get(i + 1));
-                    if (subtitle.isTranslationFirstinLine()) {
-                        line.setTranslation(lineTxt.get(i + jumpLineCount));
-                        line.setOriginal(lineTxt.get(i + jumpLineCount + 1));
-                    } else {
-                        line.setOriginal(lineTxt.get(i + jumpLineCount));
-                        line.setTranslation(lineTxt.get(i + jumpLineCount + 1));
-                    }
-                    lines.add(line);
+                    getFormat(subtitle, lines, lineTxt, jumpLineCount, i, line);
                 }
                 break;
             case NO_TRANSLATE_INDEX:
@@ -117,6 +110,17 @@ public class LineService {
         return lines;
     }
 
+    private void getFormat(Subtitle subtitle, List<Line> lines, List<String> lineTxt, int jumpLineCount, int i, Line line) {
+        if (subtitle.isTranslationFirstinLine()) {
+            line.setTranslation(lineTxt.get(i + jumpLineCount));
+            line.setOriginal(lineTxt.get(i + jumpLineCount + 1));
+        } else {
+            line.setOriginal(lineTxt.get(i + jumpLineCount));
+            line.setTranslation(lineTxt.get(i + jumpLineCount + 1));
+        }
+        lines.add(line);
+    }
+
     private List<Line> sortLines(List<Line> lines) {
         lines = lines.stream().sorted(Comparator.comparing(Line::getIndex)).collect(Collectors.toList());
         return lines;
@@ -150,14 +154,7 @@ public class LineService {
         Line line = new Line();
         line.setIndex(openAiConfig.getStartIndex() + index++);
         line.setTimestamp(lineTxt.get(i));
-        if (subtitle.isTranslationFirstinLine()) {
-            line.setTranslation(lineTxt.get(i + jumpLineCount));
-            line.setOriginal(lineTxt.get(i + jumpLineCount + 1));
-        } else {
-            line.setOriginal(lineTxt.get(i + jumpLineCount));
-            line.setTranslation(lineTxt.get(i + jumpLineCount + 1));
-        }
-        lines.add(line);
+        getFormat(subtitle, lines, lineTxt, jumpLineCount, i, line);
         return index;
     }
 }
