@@ -72,10 +72,4 @@ public class FixService {
         }
     }
 
-    private void moveLines(List<Line> lines, LineFix lineFix, int dislocationIndexOpen, int i, Line line) {
-        String translation = lines.get(i - lineFix.getMoveCount()).getTranslation();
-        LOGGER.info("替换:原译文移动{}位,[{}]{}-->", lineFix.getMoveCount(), line.getIndex(), line.getTranslation());
-        line.setTranslation(translation);
-        LOGGER.info("新译文[{}]{}-->", line.getIndex(), line.getTranslation());
-    }
 }
