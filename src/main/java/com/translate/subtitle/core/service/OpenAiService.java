@@ -91,8 +91,8 @@ public class OpenAiService {
                         LOGGER.warn("该段翻译成功！");
                         break;
                     } else {
-                        LOGGER.warn("本段翻译异常,缺失行数:[{}],缺失index：[{}],重试第{}次",
-                                linesTmp.size() - i1, builder.toString(), i + 1);
+                        LOGGER.warn("本段翻译异常,总行数:[{}],缺失行数:[{}],触发线系数[{}],缺失index：[{}],重试第{}次",
+                                linesTmp.size(), linesTmp.size() - i1, openAiConfig.getRetryExponent(), builder.toString(), i + 1);
                     }
                 }
 

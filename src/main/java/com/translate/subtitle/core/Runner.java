@@ -28,9 +28,9 @@ public class Runner implements CommandLineRunner {
         preRun();
         //chatGPT翻译
         subtitleService.translate();
-        ////Whisper音频转字幕
+        //Whisper音频转字幕
         //whisperService.whisper();
-        ////修复字幕
+        //修复字幕
         //fixService.fix();
     }
 

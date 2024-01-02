@@ -17,7 +17,6 @@ public class CookieUtils {
     private final Logger LOGGER = LogManager.getLogger();
 
     private CookieUtils() {
-
     }
 
     public static CookieUtils getInstance() {
@@ -34,7 +33,7 @@ public class CookieUtils {
         System.setProperty("java.net.useSystemProxies", "true");
         List<Proxy> l = null;
         try {
-            l = ProxySelector.getDefault().select(new URI("https://nhentai.net/favorites/"));
+            l = ProxySelector.getDefault().select(new URI("https://www.google.com/"));
         } catch (URISyntaxException e) {
             LOGGER.error(e.getMessage());
         }

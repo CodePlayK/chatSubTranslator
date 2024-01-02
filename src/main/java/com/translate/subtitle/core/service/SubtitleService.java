@@ -38,7 +38,7 @@ public class SubtitleService {
     private OpenAiConfig openAiConfig;
 
     public void translate() {
-        preRun();
+        //preRun();
         Subtitle subtitle = getSubtitle(openAiConfig.getFileName(), FILENAME_PREFIX);
         ArrayList<Line> chatGPTLines = null;
         try {
@@ -173,7 +173,7 @@ public class SubtitleService {
 
 
     public void preRun() {
-        chatGPTRequestUtil.chat("下面将英文字幕翻译成中文。", SYSTEM);
+        //chatGPTRequestUtil.chat("下面将英文字幕翻译成中文。", SYSTEM);
         //chatGPTRequestUtil.chat("生成的文本按原序号分段。", ASSISTANT);
     }
 }
